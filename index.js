@@ -27,6 +27,11 @@ function getLoaderConfig(loaderContext) {
 }
 
 module.exports = function(source) {
+  //Avoid processing this loader twice for the same file
+  var handlebarLoaders = this.loaders.filter(function(l) { return l.path.includes('handlebars'); });
+  var loaderCount = handlebarLoaders.filter(function(l){ return l.normalExecuted; }).length;
+  if (loaderCount == 2) return source;
+
   if (this.cacheable) this.cacheable();
   var loaderApi = this;
   var query = getLoaderConfig(loaderApi);
